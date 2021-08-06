@@ -1,0 +1,102 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import pandas as pd\n",
+    "from datetime import datetime, date, time\n",
+    "import pyodbc"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "cnxn = pyodbc.connect(\"DRIVER={MySQL ODBC 8.0 Unicode Driver}; SERVER=server; DATABASE=db; PORT=port; UID=username; PASSWORD=password\")\n",
+    "sql = \"\"\"select id,\n",
+    "                    ext_id, \n",
+    "                    user_gc_id, \n",
+    "                    date,\n",
+    "                    type, \n",
+    "                    title, \n",
+    "                    utm_source,\n",
+    "                    utm_medium,\n",
+    "                    utm_content,\n",
+    "                    utm_term,\n",
+    "                    utm_group,\n",
+    "                    utm_campaign,\n",
+    "                    sum \n",
+    "                    from n_acctg_payments\"\"\"\n",
+    "data = pd.read_sql(sql,cnxn)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def add_date_diff(df):\n",
+    "        date_format = \"%Y-%m-%dT%H:%M:%SZ[UTC]\"\n",
+    "        df['date'] = pd.to_datetime(df['date'], format = date_format, utc = True)\n",
+    "        df = df.sort_values(by=['user_gc_id','date'])\n",
+    "        df['date_diff'] = (df.groupby('user_gc_id').date.diff().dt.days.fillna(0, downcast='infer'))\n",
+    "        df['date'] = df['date'].astype(str)       \n",
+    "        return df"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "cleaned = add_date_diff(data)\n",
+    "cleaned[\"sum\"] = cleaned[\"sum\"].astype(int)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "Filename = 'Sales + date_diff.csv'\n",
+    "cleaned.to_csv('C:/Users/jenli/Documents/My Tableau Prep Repository/Datasources/'+Filename, index=False, encoding = 'utf-8-sig')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.7.4"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}
