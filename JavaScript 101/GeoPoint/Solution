@@ -1,0 +1,107 @@
+Problem 1
+Implement a constructor to build a GeoPoint object. This object must have three properties:
+latitude, longitude and altitude. In addition, implement three methods to access to the
+properties (getters) and three more to change the value (setters).
+The next code must work:
+
+========================CODE===========================
+
+function GeoPoint (latitude, longitude, altitude) {
+this.latitude = latitude;
+this.longitude = longitude;
+this.altitude = altitude;
+
+this.GetLatitude = function() {
+ return this.latitude;
+};
+this.GetLongitude = function() {
+ return this.longitude;
+};
+this.GetAltitude = function() {
+ return this.altitude;
+};
+this.SetLatitude = function(x) {
+ this.latitude = x;
+ return this.latitude;
+};
+this.SetLongitude = function(x) {
+	this.longitude = x;
+ return this.longitude;
+};
+this.SetAltitude = function(x) {
+	this.altitude = x;
+ return this.altitude;
+};
+}
+
+
+var p1 = new GeoPoint(39.97, -0.05, 30);
+var p2 = new GeoPoint(41.3825, 2.176944, 9);
+alert("Latitude: " + p1.GetLatitude() +
+ " Longitude: " + p1.GetLongitude() +
+ " Altitude: " + p1.GetAltitude());
+alert("Latitude: " + p2.GetLatitude() +
+ " Longitude: " + p2.GetLongitude() +
+ " Altitude: " + p2.GetAltitude());
+
+p1.SetLatitude(40.055278);
+p1.SetLongitude(0.064167);
+p1.SetAltitude(15.0);
+alert("Latitude: " + p1.GetLatitude() +
+ " Longitude: " + p1.GetLongitude() +
+ " Altitude: " + p1.GetAltitude());
+
+====================END===============================
+Problem 2
+Add a method to estimate the distance between two GeoPoint instances. Look at Internet how
+to estimate the distance between two points in the Earth.
+The next code must work:
+
+======================CODE==============================
+
+function GeoPoint (latitude, longitude, altitude) {
+this.latitude = latitude;
+this.longitude = longitude;
+this.altitude = altitude;
+
+this.GetLatitude = function() {
+ return this.latitude;
+};
+this.GetLongitude = function() {
+ return this.longitude;
+};
+this.GetAltitude = function() {
+ return this.altitude;
+};
+this.SetLatitude = function(x) {
+ this.latitude = x;
+ return this.latitude;
+};
+this.SetLongitude = function(x) {
+	this.longitude = x;
+ return this.longitude;
+};
+this.SetAltitude = function(x) {
+	this.altitude = x;
+ return this.altitude;
+};
+this.deg2rad = function (deg) {
+  return deg * (Math.PI/180)
+};
+this.EstimateDistance = function(x) {
+  var R = 6371; // Radius of the earth in km
+  var dLat = this.deg2rad(x.latitude-this.latitude);  // deg2rad below
+  var dLon = this.deg2rad(x.longitude-this.longitude); 
+  var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(this.deg2rad(this.latitude)) * Math.cos(this.deg2rad(x.latitude)) *   Math.sin(dLon/2) * Math.sin(dLon/2); 
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+  var d = R * c; // Distance in km
+  return d
+};
+}
+
+var p1 = new GeoPoint(39.97, -0.05, 30);
+var p2 = new GeoPoint(41.3825, 2.176944, 9);
+
+alert("The distance between the point [" + p1.GetLatitude() + ',' + p1.GetLongitude() + '] and [' + p2.GetLatitude() + ',' + p2.GetLongitude() + '] is ' + p1.EstimateDistance(p2));
+
+====================END===============================
