@@ -1,0 +1,48 @@
+sids<- data.frame(read.csv("C:\\Users\\Yevgeniya Litvinova\\Documents\\SIW 004 Math and Stats\\final individual\\final_data.csv"))
+#
+group = sids[,1]
+sids <- sids[,-1]
+attach(sids)
+#
+matrix.sids <- matrix(c(sids[,1],sids[,2],sids[,3],sids[,4]), ncol = 4)
+
+#typification
+sd.vector = apply (sids,2,sd)
+mean.vector = apply(sids, 2, mean)
+
+top = (apply(sids,2, function(x) x) -apply(sids, 2, mean))
+sd = apply (sids,2,sd)
+sids.dat<-sweep(top,2,sd,FUN="/")
+#
+newdata<-rbind(c(110,3320,0.240,39),c(120,3310,0.298,37))
+colnames(newdata)<-colnames(sids)
+newdata#
+#
+library(MASS)
+dis<-lda(sids.kmean$cluster~HR+BW+Factor68+Gesage,data=sids, prior=c(0.5, 0.5))
+#
+#
+n<-length(sids[,1])
+wss1<-(n-1)*sum(apply(sids.dat,2,var))
+wss<-numeric(0)
+for(i in 2:6) {
+	   W<-sum(kmeans(sids.dat,i)$withinss)
+	   wss<-c(wss,W)
+}
+#
+wss<-c(wss1,wss)
+plot(1:6,wss,type="l",xlab="Number of groups",ylab="Within groups sum of squares",lwd=2)
+#
+sids.kmean<-kmeans(sids.dat,2)
+sids.kmean$cluster
+sids <- cbind(sids, sids.kmean$cluster)
+sids#
+#
+newdata<-data.frame(newdata)
+predict(dis,newdata=newdata)
+#
+#
+group<-predict(dis,method="plug-in")$class
+#
+table(group,"sids" = sids.kmean$cluster)
+#
