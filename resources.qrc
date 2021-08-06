@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/plugins/gpx_trackreviser" >
+        <file>icon.png</file>
+    </qresource>
+</RCC>
